@@ -1,0 +1,441 @@
+---
+title: "Algal-Dependency in Sub-Tropical, Arid Streams: Supplemental"
+author: "Sean Kinard"
+date: "2023-05-24"
+output: 
+  pdf_document
+---
+
+```{r , include = F, echo=F, message=F}
+setwd('/home/kinard/Documents/Research/Dissertation/03_Autochthony')
+
+source('Rfig/fig_algae_boot.R')
+source('Rfig/fig_aq_itl_combined.R')
+source('Rfig/fig_autotrophy.R')
+source('Rfig/fig_CH_mixing_model.R')
+source('Rfig/fig_density.R')
+source('Rfig/fig_diversity.R')
+source('Rfig/fig_forklength.R')
+source('Rcal/01_forklength_calc.R')
+#source('Rfig/fig_HN_range.R')
+#source('Rfig/fig_HN_SIBER.R')
+source('Rfig/fig_isotope_scatter.R')
+source('Rfig/fig_isotopic_TL.R')
+source('Rfig/fig_range_influence.R')
+source('Rfig/fig_RDA_fish.R')
+source('Rfig/fig_RDA_invertebrate.R')
+#source('Rfig/fig_scatter.R')
+#source('Rfig/isotopic_TL_vs_size.R')
+source('Rcal/09_carvallo_ST6_extraction.R')
+```
+
+\newpage
+
+#### Supplemental: Exclosure Algae Comparisons
+
+\
+
+```{r , echo=F, message=F, fig.align = 'center'}
+table_algae_boot %>% 
+  mutate(Sit.Sig=str_replace_all(Sit.Sig, "∗", "*"),
+         Tre.Sig=str_replace_all(Tre.Sig, "∗", "*")) %>%
+  kable(align=c('l', 'l', 'c', 'c', 'l', 'l'), digits = 2,
+        "latex", booktabs = T, escape=F, table.envir = "center") %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+
+Bootstrap mean and 95% confidence intervals of site and exclosure effects
+on total algae abundance on ceramic plates measured by irradiance.
+Stars denote significant differences between a pair of sites (Sit.Sig) or treatments (Tre.Sig).
+
+\newpage
+
+#### Supplemental: Exclosure Discharge
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+REU_flow_timeseries +
+  flow_density +
+  plot_annotation(tag_levels= 'A') +
+  plot_layout(guides = 'collect') & theme(legend.position = 'bottom',
+        legend.direction = 'horizontal')
+```
+
+(A) Time series and (B) histogram of average daily discharge (l/s) during 2018 exclosure deployment at Semi-Arid (gold), Transition (light blue), and Sub-Humid sites (dark blue). Flows were stable at the Semi-Arid site. The Transition site experienced a large flood in the first week of deployment, but flows were stable thereafter. The Sub-Humid site experienced a small flood in the second week of deployment and then flows stagnated at ~0 l/s for the last 2 weeks of deployment.
+
+\newpage
+
+#### Supplemental: Exclosure Predictors
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+p_algae
+```
+
+Total Chlorophyll on tiles after 30-day deployment, maximum flood strength ((max-base)/base), proportion of flows over three times median average daily discharge, canopy coverage, nitrate  concentration, and ortho-phosphate concentration at Semi-Arid (55 cm/yr), Transition (70 cm/yr), and Sub-Humid (85 cm/yr) sites.
+
+\
+
+```{r , echo=F, message=F, fig.align = 'center'}
+format_table_algae <- function(x) {
+  Variable <- c("Chl $\\alpha$", 
+       "Rain", 
+       "Canopy", 
+       "NO\\textsubscript{3}\\textsuperscript{-}", 
+       "PO\\textsubscript{4}\\textsuperscript{-}",
+       "Q Median", 
+       "Q SD", 
+       "Q Max", 
+       "Flood")
+  
+  Units <- c("$\\mu$g\\slash cm", 
+             "cm\\slash yr", 
+             "\\%", 
+             "mg\\slash l", 
+             "mg\\slash l",
+             "l\\slash s", 
+             "l\\slash s", 
+             "l\\slash s", 
+             "\\%" )
+  
+  x %>%
+  pivot_longer(cols = tile_chl:HFPP3,
+               names_to = 'X',
+               values_to = 'Value') %>%
+  pivot_wider(names_from = site_code,
+              values_from = Value) %>%
+  add_column(Variable) %>%
+  add_column(Units) %>%
+  select(Variable, Units, `Semi-Arid`, `Transition`, `Sub-Humid`) }
+
+d_algae %>%
+  format_table_algae() %>%
+  mutate(`Semi-Arid` = tormat(`Semi-Arid`, 1),
+         Transition = tormat(Transition, 1),
+         `Sub-Humid` = tormat(`Sub-Humid`, 1)) %>%
+  kable(align=c('l', 'l', 'r', 'r', 'r'),
+        digits = 1, "latex", booktabs = T, escape=F, table.envir = "center")
+  
+  
+```
+
+\newpage
+
+
+\newpage
+
+#### Supplemental: Isotope Scatterplots
+```{r , echo=F, message=F, warning=FALSE, fig.height=9.4, fig.width=9, fig.align = 'center'}
+biplot_CH + biplot_NH + plot_annotation(tag_levels='A') +
+  plot_layout(guides='collect') &
+  theme(legend.position='bottom') &
+  guides(shape = guide_legend(override.aes = list(size = 5)))
+```
+**(A)** $\delta$^13^C (\textperthousand) or **(B)** $\delta$^15^N (\textperthousand) versus
+$\delta$^2^H (\textperthousand) scatter plots of aquatic (grey circles) and terrestrial
+(white squares) sources, as well as invertebrates (blue diamonds) and
+fish (pink triangles). Samples were collected from Semi-Arid,
+Transition, and Sub-Humid sites. Dotted lines encompass the area as an
+ellipse, containing 95% of the estimated t-distribution for each group.
+
+\newpage
+#### Supplemental: Isotope Mixing Model
+
+```{r , echo=F, message=F, warning=FALSE, fig.height=6, fig.width=9, fig.align = 'center'}
+(mix_box_guild +
+    theme(legend.position=c(0.29,0.87),
+          legend.box.margin = margin(1,1,1,1))) +
+  (mix_box_ffg +
+     theme(legend.position='none') +
+     ylab(element_blank()) ) +
+  plot_layout(widths=c(.33,.67))
+```
+
+Estimated assimilation of autochthonous (aquatic source) in fish and Invertebrate communities as well as functional feeding groups within Semi-Arid, Transition, and Sub-Humid streams. Diamonds represent mean values and are colored according to sample site (darkening with increased precipitation) with bars extending to the 95% credible interval. Autochthonous assimilation is estimated using $\delta$^13^C and $\delta$^2^H in a Bayesian mixing model for each group of comparison and calibrated to local source signatures. 
+
+\newpage
+
+
+#### Supplemental: Isotopic Trophic Level
+
+```{r , echo=F, message=F, warning=FALSE, fig.height=6, fig.width=9, fig.align = 'center'}
+(plot_TL_guild +
+    theme(legend.position=c(0.29,0.87),
+          legend.box.margin = margin(1,1,1,1)) ) +
+  (plot_TL_ffg +
+     theme(legend.position='none') +
+     ylab(element_blank()) ) +
+  plot_layout(widths=c(.33,.67))
+```
+
+Isotopic trophic levels for fish and invertebrate communities as well as functional
+feeding groups. Diamonds represent mean values and are colored according to sample site (darkening with increased precipitation) with bars extending to the 95% credible interval. Isotopic trophic levels are estimated using $\delta$^15^N signatures, calibrated to local source signatures and use a trophic discrimination factor of 3.4‰.
+
+\newpage
+
+#### Supplemental: Isotope Autochthony vs Trophic Level
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center', fig.width=9, fig.height=9}
+(((p_aq_itl_f_spe +
+      guides(fill='none') +
+      theme(legend.position=c(.77,.8),
+        legend.box.margin = margin(1,1,1,1)) +
+      xlab(element_blank())) / 
+     (p_aq_itl_f_tro +
+        guides(fill='none') +
+        theme(legend.position=c(.78,.8),
+        legend.box.margin = margin(1,1,1,1)))) |
+   ((p_aq_itl_i_spe +
+  theme(legend.position=c(.75,.7),
+        legend.box.margin = margin(1,1,1,1)) +
+        ylab(element_blank()) +
+    xlab(element_blank())) /
+  (p_aq_itl_i_tro +
+     guides(fill='none') +
+     ylab(element_blank()) +
+  theme(legend.position=c(.8,.8),
+        legend.box.margin = margin(1,1,1,1)) ))  ) + 
+  plot_annotation(tag_levels= 'A')
+```
+Isotopic trophic level (estimated using $\delta^{15}$N) plotted against aquatic assimilation (estimated using $\delta^{13}$C and $\delta^{2}$H) for **(A)** common fish species, **(B)** fish feeding groups, **(C)** common invertebrate species, and **(D)** invertebrate feeding groups. Scatter plot points are shaped according to their taxonomic group and colored by site (darkening with annual rainfall). Comparisons within fish display a strong negative relationship between isotopic trophic level and autochthonous resource assimilation which coincides with increasing aridity. Invertebrate comparisons reveal a weak negative relationship between isotopic trophic level and aquatic resource assimilation that weakly coincides with site precipitation patterns.
+
+\newpage
+
+#### Supplemental: Isotope Range Influence
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center', fig.width=9, fig.height=5.25}
+p_inf_H + 
+  (p_inf_N + ylab(element_blank()) ) +
+  plot_annotation(tag_levels='A') +
+  plot_layout(guides='collect') &
+  theme(legend.position='bottom')
+```
+Fish and invertebrates influence **(A)** resource breadth $\sigma^{2}$H range) and **(B)** food-chain length ($\sigma^{15}$N range) at Semi-Arid (white), Transiiton (light), and Sub-Humid (dark) sites. Range extension reflects the difference between the bootstrapped range estimate with and without each taxa. Semi-Arid resource breadth was largely influenced by Belostomatidae (62% autochthonous) and *P.latipinna* (80% autochthonous) and food-chain length was driven by invertebrate predators (Aeshnidae and Nepidae) as well as piscivorous *L.oculatus*. Excepting Thiaridae (60% autochthonous), no taxa at the Transition extend $\sigma^{15}$N or $\sigma^{2}$H ranges more than 20%, which may reflect greater dietary overlap among taxa. At the Sub-Humid site, resource breadth and food-chain length are highly influenced by *L.macrochirus* (8% autochthonous).
+
+\newpage
+
+
+```{r , echo=F, message=F, fig.align = 'center'}
+table_inf %>%
+  rename(`% Autoch.` = Aquatic) %>%
+  mutate(`Range Ext.` = tormat(`Range Ext.`, 1)) %>%
+  kable(align=c('c', 'l', 'c', 'l', 'c', 'c', 'c', 'l'), digits = 2,
+        "latex", booktabs = T, escape=T, table.envir = "center") %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+
+Influential fish and invertebrate taxa on $\sigma^{2}$H (resource breadth) and $\sigma^{15}$N (food-chain length) range extension (Range Ext.) with relative abundance (R.Abundance) and mixing model estimates of autochthonous assimilation (% Autochthonous) and isotopic trophic level (I.T.L). † indicates values are taken from the trophic category.
+
+\newpage
+
+#### Supplemental: Isotope Raw Values
+
+\
+
+```{r , echo=F, message=F, warning=FALSE, fig.height=9.4, fig.width=9, fig.align = 'center'}
+table_HCN %>%
+  filter(Guild %in% c('Aquatic', 'Terrestrial')) %>%
+  select(-Guild) %>%
+  kable(align=c('l','l','c','c', 'c'),
+        "latex", booktabs = T, escape=F, table.envir = "center",
+        col.names = c("Source", "Site", 
+                      "$\\delta^{2}$H", "$\\delta^{13}$C", 
+                      "$\\delta^{15}$N")  ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+$\delta$^2^H, $\delta$^13^C, and $\delta$^15^N mean ±
+standard deviation (number of samples) for aquatic and terrestrial resources at three
+sample sites (Transition, Semi-Arid, and Sub-Humid).
+
+\newpage
+
+```{r , echo=F, message=F, warning=FALSE, fig.height=9.4, fig.width=9, fig.align = 'center'}
+table_HCN %>%
+  filter(Guild == 'Fish') %>%
+  rename(Taxon = Species) %>%
+  select(-Guild) %>% 
+  kable(align=c('l','l','c', 'c','c'),
+        "latex", booktabs = T, escape=F, table.envir = "center",
+        col.names = c("Fish", "Site", 
+                      "$\\delta^{2}$H", "$\\delta^{13}$C", 
+                      "$\\delta^{15}$N")  ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold")) 
+```
+$\delta$^2^H, $\delta$^12^C, and $\delta$^15^N mean ± standard deviation (number of samples) for fish at three sample sites (Transition, Semi-Arid, and Sub-Humid).
+
+\newpage
+
+```{r , echo=F, message=F, warning=FALSE, fig.height=9.4, fig.width=9, fig.align = 'center'}
+table_HCN %>%
+  filter(Guild == 'Invertebrate') %>%
+  rename(Taxon = Species) %>%
+  select(-Guild) %>% 
+  kable(align=c('l','l','c', 'c','c'),
+        "latex", booktabs = T, escape=F, table.envir = "center",
+        col.names = c("Invertebrate", "Site", 
+                      "$\\delta^{2}$H", "$\\delta^{13}$C", 
+                      "$\\delta^{15}$N")  ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+$\delta$^2^H, $\delta$^12^C, and $\delta$^15^N mean ± standard deviation (number of samples) for Inverterbates at three sample sites (Transition, Semi-Arid, and Sub-Humid).
+
+\newpage
+
+#### Supplemental: Community Fish
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center', fig.width=8, fig.height=5}
+modplot <- function(my_plot) {
+  my_plot +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.title.x = element_blank())}
+
+RDA_f_se + theme(legend.position= c(0.19,0.16)) +
+  ((modplot(density_boxplot_fish) + theme(legend.position = 'none')) /
+  (modplot(boxplot_shannon_f) + theme(legend.position = 'none'))) + 
+  plot_layout(widths = c(1.5, 1)) + 
+  plot_annotation(tag_levels= 'A')
+```
+**(A)** Ordination of fish communities at Semi-Arid, Transition, and Sub-Humid sites collected in May-July of 2018. Redundancy Analysis axes are labeled with the proportion of variation within the community matrix is explained. The ordination is constrained by 6 environmental variables represented by labeled, arrows (only those with *p*<0.1 are plotted). Circles represent communities with numeric labels for the month sampled and shaded by annual precipitation. Red crosses with spread-out labels represent species; rare and region-wide species ordinate in the center while site-specific and populous species ordinate next to their community. The Semi-Arid site is characterized by *P.latipinna*. The other sites contain more sunfish (*L.macrochirus* and *L.megalotis*) with the Transition site uniquely containing *C.lutrensis* (2/3 months) and the Sub-Humid site containing more *G.affinis*. **(B)** Boxplot of fish densities at semi-arid, transition, and sub-humid sites. **(C)** Boxplot of Shannon-Wiener diversity for fish communities at Semi-Arid, Transition, and Sub-Humid sites. Boxplot colors darken with increasing
+precipitation and red diamonds represent mean values.
+
+\newpage
+
+#### Supplemental: Community Invertebrate
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center', fig.width=8, fig.height=5}
+(RDA_i_se + theme(legend.position= c(0.80,0.83)) +
+  ((modplot(density_boxplot_invertebrate) + theme(legend.position = 'none'))) /
+  (modplot(boxplot_shannon_i) + theme(legend.position = 'none'))) + 
+  plot_layout(widths = c(1.5, 1)) + 
+  plot_annotation(tag_levels= 'A')
+```
+
+**(A)** Ordination of invertebrate kicknet communities at Semi-Arid, Transition, and Sub-Humid sites collected in May-July of 2018. Redundancy Analysis axes are labeled with the proportion of variation within the community matrix is explained. The ordination is constrained by 6 environmental variables represented by labeled, arrows (only those with *p*<0.1 are plotted). Circles represent communities with numeric labels for the month sampled and shaded by annual precipitation. Red crosses with spread-out labels represent taxonomic families; rare and region-wide species ordinate in the center while site-specific and populous species ordinate next to their community. The Sub-Humid site is distinguished from Transition and Semi-Arid site communities by the presence of abundant amphipods (*Hyalella*) **(B)** Boxplot of invertebrate densities at semi-arid, transition, and sub-humid sites surveyed with kicknets May-July in 2018. Box colors darken with rising annual precipitation and red diamonds represent site mean values. Visually, invertebrate densities appear greatest at the transition site, although Tukey comparisons between site means lack statistical significance. **(C)** Boxplot of Shannon-Wiener diversity for invertebrate communities at Semi-Arid, Transition, and Sub-Humid sites surveyed May-July of 2018. Boxplot colors darken with increasing precipitation and red diamonds represent mean values. Invertebrate diversity is highest at the Transition site.
+
+\newpage
+
+#### Supplemental: Community RDA 
+
+\
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+table_RDA_f %>% 
+  kable(align = c('l', 'l', 'l', 'l', 'l'), digits = 2,
+        "latex", booktabs = T, escape=F, table.envir = "center",
+        col.names = c("Vector", "r", "$p$ value","Axis 1", "Axis 2")  ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+
+Axes values (in radians), correlation coefficients and *p*-values for fitted vectors of environmental variables and influential taxa in the Redundancy Analysis of fish communities.
+
+\newpage
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+table_RDA_i %>% kable(align = c('l', 'l', 'l', 'l', 'l'), digits = 2,
+        "latex", booktabs = T, escape=F, table.envir = "center",
+        col.names = c("Vector", "r", "$p$ value","Axis 1", "Axis 2")  ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+
+Axes values (in radians), correlation coefficients and *p*-values for fitted vectors of environmental variables and influential taxa in the Redundancy Analysis of invertebrate communities.
+
+\newpage
+
+#### Supplemental: Community *Carvallo et al. 2021* Summary
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center',fig.width=7, fig.height=5}
+p_table_ts4
+```
+
+Annual Mean and standard errors for sediment-core invertebrate abundance (individuals/m^2^), species richness, and functional richness at Fernando Creek (Semi-Arid), Aransas River (Transition), and Garcitas Creek (Sub-Humid) (Cavallo et al. 2022).
+
+\
+\
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+table_ts4 %>% 
+  kable(align = c('l', 'c', 'c', 'c'), digits = 2,
+        "latex", booktabs = T, escape=F) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+
+\newpage
+#### Supplemental: Community *Carvallo et al. 2021* Feeding Groups
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+p_invert_ffg2 +
+  ggtitle(element_blank())
+```
+Proportions of herbivore, predator, and other invertebrate functional feeding groups in each season of 2018. Data extracted from supplemental table 6 in Carvallo et al. 2022.
+
+\
+\
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+table_carvallo_ffg %>% kable(align = c('l', 'c', 'c', 'c', 'c', 'c'), digits = 2,
+        "latex", booktabs = T, escape=F, table.envir = "center",
+        col.names = c("Site", "Filter", "Collector","Herbivore", 
+                      "Predator", "Shredder")  ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+
+\newpage
+
+#### Supplemental: Community Abundance Comparisons
+
+\
+
+```{r , echo=F, message=F, warning=FALSE , fig.align = 'center'}
+table_density %>% kable(align=rep('c', length(colnames(table_density))),
+        "latex", booktabs = T, escape=F, table.envir = "center",
+        col.names = c("Guild", "Semi-Arid", "Transition", 
+                      "Sub-Humid", "Comparison", "Difference", 
+                      "$p$ value")  ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+
+Density statistics and mean comparisons for fish or invertebrates densities. Summary statistics for each site include the mean ± the standard deviation for collections during May-July of 2018. Tukey 'Honest Significant Difference' comparisons are described in terms of the differences between means and the associated *p*-value. The semi-arid site had greater fish densities than the transition or the sub-humid sites.
+
+\newpage
+
+#### Supplemental: Community Diversity Comparisons
+```{r , echo=F, message=F, warning=FALSE , fig.align = 'center'}
+boxplot_diversity
+```
+Species richness, Shannon-Wiener, and Simpson diversity estimates for fish and invertebrate communities at Semi-Arid, Transition, and Sub-Humid sites surveyed May-July of 2018. Boxplot colors darken with increasing precipitation and red diamonds represent mean values. Fish species richness and evenness were lowest at the Semi-Arid site and highest at the Sub-humid site. Invertebrate species richness and evenness were greatest at the Transition site.
+
+\
+\
+
+```{r , echo=F, message=F, warning=FALSE , fig.align = 'center'}
+table_THSD_diversity %>% 
+  kable(align=rep('c', length(colnames(table_THSD_diversity))),
+        "latex", booktabs = T, escape=F, table.envir = "center",
+        col.names = c("Guild", "Comparison", "Difference", "Lower", 
+                      "Upper", "$p$ value")  ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+Comparisons of mean Shannon-Wiener indices of fish or
+invertebrates across sites using Tukey's 'Honest Significant Difference'
+method. Comparisons are described in terms of the differences between
+means, the lower interval limit, upper interval limit, and associated
+*p*-value. Invertebrate diversity is greater at the Transition site
+compared to Semi-Arid and Sub-Humid sites.
+
+\newpage
+
+#### Supplemental: Community Fork Length Comparisons
+```{r , echo=F, message=F, warning=FALSE , fig.align = 'center'}
+histogram_forklength
+```
+Histogram of fish forklengths at Semi-Arid, Transition, and Sub-Humid sites surveyed in May-July of 2018. Bar chunks are colored by taxonomic family. to ease visual comparison six spotted gar (*L.oculatus*) with forklengths over 170 mm were omitted; one at the transition site, and five at the sub-humid site. Whole community average forklength is smaller in Semi-Arid compared to Transition and Sub-Humid sites, due to a lack of centrarchids and spotted gar.
+
+\
+
+```{r , echo=F, message=F, warning=FALSE , fig.align = 'center'}
+THSD_forklength %>% kable(align=c('l','c','c','c','c'), digits=2,
+        "latex", booktabs = T, escape=F, table.envir = "center" ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+Comparisons of mean fish forklength across sites using Tukey's 'Honest Significant Difference'
+method. Comparisons are described in terms of the differences between
+means, the lower interval limit, upper interval limit, and associated
+*p*-value. Invertebrate diversity is greater at the Transition site
+compared to Semi-Arid and Sub-Humid sites.
+
+\newpage

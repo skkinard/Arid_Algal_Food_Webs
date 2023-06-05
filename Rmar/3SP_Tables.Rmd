@@ -1,0 +1,82 @@
+---
+title: "Algal-Dependency in Sub-Tropical, Arid Streams: Tables"
+author: "Sean Kinard"
+date: "2023-05-24"
+output: 
+  pdf_document: 
+    latex_engine: xelatex
+---
+
+```{r , include = F, echo=F, message=F}
+setwd('/home/kinard/Documents/Research/Dissertation/03_Autochthony')
+
+library(tidyverse)
+library(flextable)
+library(knitr)
+library(kableExtra)
+
+site_table <- read_csv('Rfig/site_table.csv')
+table_aq_assimilated <- read_csv('Rfig/table_aq_assimilated.csv')
+table_TL <- read_csv('Rfig/table_TL.csv')
+table_siber_range <- read_csv('Rfig/table_siber_and_bstrap_range.csv')
+```
+
+\newpage
+
+#### Table 1. Site Characteristics
+```{r , echo=F, message=F, warning=FALSE , fig.align = 'center'}
+site_table %>% kable(align = c('l', 'c', 'c', 'c', 'c'), digits = 2,
+        "latex", booktabs = T, escape=T, table.envir = "center") %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+Sampling location environmental characteristics (E.variables).
+Annual rainfall, annual average temperature and elevation were obtained
+from the USGS Gages-ii database. In-situ measurements represent the
+seasonal mean $\pm$ the standard error; three measurements were taken every
+25 meters within each stream, May-July of 2018, for a total of nine
+samples.
+
+\newpage
+
+#### Table 2. Autochthonous Assimilation
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+my_sizes <- c("< 50mm", "< 100mm", "< 150mm", "> 150mm")
+
+table_aq_assimilated %>% 
+  filter(! Group %in% my_sizes) %>%
+kable(align=c('l','l','l','l'), digits = 2,
+        "latex", booktabs = T, escape=T, table.envir = "center" ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+Autochthonous Source assimilation (%) in fish and invertebrate communities, functional feeding groups, and common taxa at Semi-Arid, Transition, and Sub-Humid sites. Values reflect the high density mode and associated 95% credible interval with stars indicating the number of non-overlapping intervals between sites. Autochthonous source assimilation is estimated using $\delta^{13}\text{C}$ and $\delta^{2}\text{H}$ in Bayesian mixing models for each level of comparison (community, feeding group, species/family), calibrated to local aquatic and terrestrial source signatures. 
+
+\newpage
+
+#### Table 3. Isotopic Trophic Level
+Isotopic trophic levels for fish and invertebrate
+communities as well as functional feeding groups. Each row contains the
+group of comparison, the mean $\pm$ the standard deviation, the
+sample size (in parentheses) as well as the statistical significance
+(whether 95% credible intervals overlap between sites). Sample $\delta^{15}\text{N}$
+values were calibrated to the local resources, so isotopic trophic
+levels represent the distance from local resources in steps of 3.4‰
+$\delta^{15}\text{N}$.
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+table_TL %>% kable(align=c('l','l','l','l'),
+        "latex", booktabs = T, escape=T, table.envir = "center" ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+
+\newpage
+
+#### Table 4. Niche Estimates
+Bayesian estimates for the $\delta^{2}\text{H}$ x $\delta^{15}\text{N}$ standard ellipse area and  nearest-neighbor distance, as well as boostrapped estimates of $\delta^{2}\text{H}$ range and $\delta^{15}\text{N}$ range for fish and invertebrate communities. Summary statistics represent the mean and the associated 95% credible interval. Statistical significance stars represent whether one or more pairs of sites have non-overlapping credible intervals.
+
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center'}
+table_siber_range %>% kable(align= c('l', 'l','l', 'l', 'l', 'l'),
+        "latex", booktabs = T, escape=T, table.envir = "center" ) %>% 
+  kable_styling(latex_options = c("solid", "basic", "hold"))
+```
+
+

@@ -1,0 +1,120 @@
+---
+title: "Algal-Dependency in Sub-Tropical, Arid Streams: Figures"
+author: "Sean Kinard"
+date: "2023-05-24"
+output: 
+  word_document:
+    reference_docx: word_template_ext_margin.docx
+---
+
+```{r , include = F, echo=F, message=F}
+setwd('/home/kinard/Documents/Research/Dissertation/03_Autochthony')
+
+source('Rfig/fig_algae_boot.R')
+source('Rfig/fig_aq_itl_combined.R')
+source('Rfig/fig_autotrophy.R')
+#source('Rfig/fig_CH_mixing_model.R')
+#source('Rfig/fig_density.R')
+#source('Rfig/fig_diversity.R')
+#source('Rfig/fig_forklength.R')
+source('Rfig/fig_HN_range.R')
+source('Rfig/fig_HN_SIBER.R')
+#source('Rfig/fig_isotope_scatter.R')
+#source('Rfig/fig_isotopic_TL.R')
+#source('Rfig/fig_range_influence.R')
+#source('Rfig/fig_RDA_fish.R')
+#source('Rfig/fig_RDA_invertebrate.R')
+source('Rfig/fig_scatter.R')
+#source('Rfig/isotopic_TL_vs_size.R')
+#----------------------------------------------------------------------------
+site_table <- read_csv('Rfig/site_table.csv')
+
+```
+
+\newpage
+
+#### Figure 1. Site Map
+![](/home/kinard/Documents/Research/Dissertation/03_Autochthony/Rfig/Figure_1_site_map.png)
+
+Locations (red triangles) where stable isotope samples were
+collected and algal exclosure experiments were conducted. These wadeable
+USGS gauged streams span a natural precipitation gradient (shading
+overlay indicates increasing precipitation) in coastal plain of
+South-Central Texas, USA. Sites include San Fernando, Aransas River and
+Garcitas Creek and are labeled according to their precipitation regime
+(Semi-Arid, Transition, and Sub-Humid respectively).
+
+\newpage
+#### Figure 2. Exclosure
+```{r , echo=F, message=F, warning=FALSE, fig.height=4, fig.width=7}
+plot_algae_boot + p_algae_slim + plot_annotation(tag_levels='A')
+
+ggsave('/home/kinard/Documents/Research/Dissertation/03_Autochthony/Rfig/Figure_2_exclosure.pdf')
+```
+
+**(A)** Total algae abundance (estimate by total chlorophyll) on ceramic growth plates at 3 sites differentiated by annual rainfall. Experimental groups are separated by
+color (light = fish excluded, dark = fish accessible). Points represent bootstrap mean estimates with 95% confidence intervals. The vertical axis is log transformed to enhance visual comparisons. **(B)** Predictors of total algae include maximum flood strength ((max-base)/base), proportion of flows over three times median average daily discharge, NO~3~^-^, and PO~4~^-^ concentration at Semi-Arid (55 cm/yr), Transition (70 cm/yr), and Sub-Humid (85 cm/yr) sites.
+
+\newpage
+
+#### Figure 3. Isotope Scatterplot
+
+```{r , echo=F, message=F, warning=FALSE, fig.width=7, fig.height=9}
+(biplot_fish +
+  facet_wrap(~site, nrow=3) +
+  theme(legend.position = 'bottom', 
+        legend.box = 'vertical',
+        legend.box.margin = margin(1,1,1,1)))  +
+  (biplot_invert +
+  facet_wrap(~site, nrow=3) +
+    ylab(element_blank()) +
+    guides(fill=guide_legend(ncol=2),
+           shape=guide_legend(ncol=2)) +
+  theme(legend.position = 'bottom', 
+        legend.box = 'vertical',
+        legend.box.margin = margin(1,1,1,1))) +
+  plot_annotation(tag_levels = 'A') +
+  plot_layout(widths=c(.6,.4))
+
+ggsave('/home/kinard/Documents/Research/Dissertation/03_Autochthony/Rfig/Figure_3_Scatter.pdf')
+```
+
+
+$\sigma^{15}$N versus $\sigma^{2}$H of **(A)** Fish, darkening with size and labeled by taxonomic order with invertebrates (grey x) and **(B)** invertebrates, shaped/colored by functional feeding group and labeled by abbreviated taxonomic family. $\sigma^{15}$N values are relative to local resource $\sigma^{15}$N values and $\sigma^{2}$H values are corrected for environmental water contribution. Aquatic (Aq) and terrestrial (Te) source $\sigma^{2}$H ranges are plotted at $\sigma^{15}$N=0. Semi-Arid fish signatures separate by size group and are spread across a wide range of $\sigma^{2}$H which contrasts with highly overlapping signatures within other fish communities within narrow $\sigma^{2}$H but stretch vertically in $\sigma^{15}$N signatures. Low numbers of recovered samples at the Sub-Humid site  (11 compared to 16 and 23) may contribute to low nearest neighbor distances as well as underestimates of $\sigma^{15}$N and $\sigma^{2}$H ranges. Despite the low sample count, Sub-Humid invertebrates spread widely across $\sigma^{2}$H values. Invertebrates at the Semi-Arid site have the lowest $\sigma^{15}$N average but variability within predators also produces a high range in $\sigma^{15}$N signatures. Corbiculidae cluster tightly and paralellel shifts in $\sigma^{15}$N and $\sigma^{2}$H signatures from Sub-Humid to Semi-Arid consistent with increases autochthonous assimilation. Predators (including Coenagrionaidae) show similar shifts, albeit with fewer samples., Unexpectedly, only one obligate grazer (Thiaridae) was collected from Semi-Arid and Transition sites, hindering total food-web reconstruction and subsequent community analyses.
+
+\newpage
+
+#### Figure 4. Autochthonous Assimilation & Isotopic Trophic Level
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center', fig.width=7, fig.height=4}
+(p_aq_itl_f_spe +
+      guides(fill='none') +
+      theme(legend.position=c(.75,.79),
+        legend.box.margin = margin(1,1,1,1))) +
+  (p_aq_itl_i_tro +
+      guides(fill='none') +
+      theme(legend.position=c(.8,.87),
+        legend.box.margin = margin(1,1,1,1)) +
+      ylab(element_blank())) +
+  plot_annotation(tag_levels='A')
+
+ggsave('/home/kinard/Documents/Research/Dissertation/03_Autochthony/Rfig/Figure_4_AA_vs_ITL.pdf')
+```
+
+Isotopic trophic level (estimated using $\delta^{15}$N) plotted against aquatic assimilation (estimated using $\delta^{13}$C and $\delta^{2}$H) for common **(A)** fish species and **(B)** invertebrate feeding groups. Scatter plot points are shaped according to their taxonomic group and colored by site (darkening with annual rainfall). Comparisons within fish display a strong negative relationship between isotopic trophic level and autochthonous resource assimilation which coincides with increasing aridity.
+
+\newpage
+
+#### Figure 5. Niche Estimates
+```{r , echo=F, message=F, warning=FALSE, fig.align = 'center', fig.width=9, fig.height=9}
+((plot_SEA + theme(legend.position='none') | 
+    plot_nearest + theme(legend.position=c(0.75,.82),
+                         axis.text.y = element_blank(),
+                         axis.ticks.y = element_blank())) /
+   (p_h_range + theme(legend.position='none') | 
+      p_n_range + theme(legend.position='none',
+                         axis.text.y = element_blank(),
+                         axis.ticks.y = element_blank()) )) +
+  plot_annotation(tag_levels = 'A')
+```
+
+**(A)** Bayesian estimates $\sigma^{15}$N x $\sigma^{2}$H standard ellipse area (community niche space) and **(B)** nearest neighbor distances (niche separation). Bootstrapped estimates of **(C)** $\sigma^{2}$H range (resource breadth) and **(D)**  $\sigma^{15}$N range (food-chain length) within fish and invertebrate communities. Diamonds represent mean values, colored by site (darkening with annual rainfall), and the bars extend to the associated 95% confidence interval. fish community niche space increases with aridity because increases in resource breadth are larger than reductions in food chain length. Niche spacing is least among fish at the Transition site despite a moderate available niche space. For invertebrates, community niche spaces are indistinguishable because decreases in resource breadth oppose increases in food-chain length.

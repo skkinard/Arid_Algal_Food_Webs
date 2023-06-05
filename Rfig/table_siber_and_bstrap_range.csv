@@ -1,0 +1,11 @@
+Guild,Estimate,Unit,Semi-Arid,Transition,Sub-Humid
+Fish,C-Range,‰,"  4 ( 4,   5)","  4 ( 4,   5)","  6 ( 5,   7)"
+Fish,Ellipse Area,‰²," 88 (60, 133)∗"," 57 (42,  78)"," 43 (32,  55)∗"
+Fish,H-Range,‰," 58 (51,  73)"," 43 (38,  57)"," 41 (33,  60)"
+Fish,N-Range,‰,"  7 ( 6,   9)","  8 ( 8,  10)"," 11 ( 8,  16)"
+Fish,Neighbor Distance,‰,"  5 ( 4,   6)∗∗","  1 ( 0,   2)∗∗","  4 ( 3,   4)∗"
+Invertebrate,C-Range,‰,"  6 ( 5,   7)∗","  6 ( 5,   8)∗"," 13 (10,  20)∗∗"
+Invertebrate,Ellipse Area,‰²,"101 (57, 165)"," 97 (61, 146)"," 92 (44, 173)"
+Invertebrate,H-Range,‰," 54 (41,  88)"," 61 (52,  88)"," 70 (59, 108)"
+Invertebrate,N-Range,‰," 12 (10,  17)∗"," 10 ( 9,  12)∗","  5 ( 4,   7)∗∗"
+Invertebrate,Neighbor Distance,‰,"  4 ( 3,   5)∗","  1 ( 0,   2)∗∗"," 19 (17,  20)∗∗"

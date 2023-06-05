@@ -1,2 +1,2 @@
-# Arid_Algal_Food_Webs
+# Arid Algal Food Webs
 Tracing Algal prevalence in freshwater streams and aquatic communities along a natural precipitation gradient to predict effects of aridity on food webs. Calculations create outputs for the folloiwing: community composition, diversity, and abundance, stable isotope mixing models, bootstrapped estimates of deuterium and nitrogen range, isotopic trophic levels. Outputs are used for visualization as figures and tables. markdown documents compile visualizations as figures, tables, and supplemental matierials documents. These analyses and accompanying prose are currently under peer review for scientific publishing.
